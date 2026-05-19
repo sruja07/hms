@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
@@ -28,3 +30,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create patient' }, { status: 500 });
   }
 }
+
