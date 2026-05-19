@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id          Int      @id @default(autoincrement())
+  name        String
+  age         Int
+  gender      String
+  contact     String
+  address     String
+  bloodGroup  String
+  createdAt   DateTime @default(now())
+  appointments Appointment[]
+  bills        Bill[]
+}
+
+model Doctor {
+  id             Int      @id @default(autoincrement())
+  name           String
+  specialization String
+  contact        String
+  availability   String
+  createdAt      DateTime @default(now())
+  appointments   Appointment[]
+}
+
+model Appointment {
+  id        Int      @id @default(autoincrement())
+  patientId Int
+  doctorId  Int
+  date      DateTime
+  time      String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+}
+
+model Ward {
+  id        Int    @id @default(autoincrement())
+  name      String
+  type      String
+  beds      Bed[]
+}
+
+model Bed {
+  id        Int     @id @default(autoincrement())
+  wardId    Int
+  bedNumber String
+  isOccupied Boolean @default(false)
+  ward      Ward    @relation(fields: [wardId], references: [id])
+}
+
+model Bill {
+  id            Int      @id @default(autoincrement())
+  patientId     Int
+  amount        Float
+  paymentStatus String   @default("unpaid")
+  description   String
+  createdAt     DateTime @default(now())
+  patient       Patient  @relation(fields: [patientId], references: [id])
+}
+
+model Hospital {
+  id       Int     @id @default(autoincrement())
+  name     String
+  city     String
+  address  String
+  contact  String
+  image    String?
+  createdAt DateTime @default(now())
+}
