@@ -7,10 +7,12 @@ function fix(dir) {
     if (fs.statSync(p).isDirectory()) {
       fix(p);
     } else if (f === 'route.ts') {
-      let lines = fs.readFileSync(p, 'utf8').split('\n');
-      lines = lines.filter(l => !l.includes('force-dynamic'));
-      lines.unshift("export const dynamic = 'force-dynamic';");
-      fs.writeFileSync(p, lines.join('\n'));
+      let content = fs.readFileSync(p, 'utf8');
+      // Remove any existing force-dynamic lines
+      content = content.split('\n').filter(l => !l.includes('force-dynamic')).join('\n');
+      // Add it at the very top
+      content = "export const dynamic = 'force-dynamic';\n" + content;
+      fs.writeFileSync(p, content, 'utf8');
       console.log('Fixed:', p);
     }
   });
